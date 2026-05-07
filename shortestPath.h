@@ -54,8 +54,26 @@ class shortestPaths{
             }
         }
         
-        void fixup(long long v, vector<long long> w){
-
+        void fixup(long long v,vector < vector<long long> > w){
+            Path * aux_l;
+            Path * aux_r;
+            for(long long i = 0; i<n; i++){
+                aux_l = P[i][i].min();
+                for(long long j = 0; j<n; j++){
+                    if(i!=j){
+                        weight[i][j] = w[i][j];
+                        if(weight[i][j] < LLONG_MAX){
+                            // criar um novo path? 
+                            // Phase 1
+                            aux_r = P[j][j].min();
+                            Path * new_path = new Path(i, j, weight[i][j],aux_l, aux_r,n);
+                            P[i][j].insert(new_path);
+                            aux_r->L.insert(new_path);
+                            aux_l->R.insert(new_path);
+                        }
+                    }
+                }
+            }
         }
     
     public:
@@ -84,6 +102,11 @@ class shortestPaths{
                 while(aux->r!=nullptr);
             }
             cout << endl;
+        }
+
+        void update(long long v, vector<vector < long long >> w){
+            cleanup(v);
+            fixup(v, w);
         }
 
 
