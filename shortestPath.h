@@ -55,24 +55,38 @@ class shortestPaths{
         }
         
         void fixup(long long v,vector < vector<long long> > w){
-            Path * aux_l;
-            Path * aux_r;
-            for(long long i = 0; i<n; i++){
-                aux_l = P[i][i].min();
-                for(long long j = 0; j<n; j++){
-                    if(i!=j){
-                        weight[i][j] = w[i][j];
-                        if(weight[i][j] < LLONG_MAX){
-                            // criar um novo path? 
-                            // Phase 1
-                            aux_r = P[j][j].min();
-                            Path * new_path = new Path(i, j, weight[i][j],aux_l, aux_r,n);
-                            P[i][j].insert(new_path);
-                            aux_r->L.insert(new_path);
-                            aux_l->R.insert(new_path);
-                        }
+            // ======== Phase 1 ========
+            Path * path_v;
+            Path * path_u;
+            path_v = P[v][v].min();
+            for(long long u = 0; u<n; u++){
+                if(u != v){
+                    path_u = P[u][u].min();
+                    weight[v][u] = w[v][u];
+                    weight[u][v] = w[u][v];
+
+                    if(weight[u][v]<LLONG_MAX){
+                        Path * new_path = new Path(u, v, weight[u][v],path_u, path_v ,n);
+                        P[u][v].insert(new_path);
+                        path_u->R.insert(new_path);
+                        path_v->L.insert(new_path);
+                    }
+
+                    if(weight[v][u]<LLONG_MAX){
+                        Path * new_path = new Path(v, u, weight[v][u],path_v, path_u ,n);
+                        P[v][u].insert(new_path);
+                        path_v->R.insert(new_path);
+                        path_u->L.insert(new_path);
                     }
                 }
+            // ======== end Phase 1 ========
+
+            // ======== Phase 2 ========
+
+            // ======== end Phase 2 ========
+
+            // ======== Phase 3 ========
+            // ======== end Phase 3 ========
             }
         }
     
@@ -100,6 +114,9 @@ class shortestPaths{
                     aux = aux->r;
                 }
                 while(aux->r!=nullptr);
+            }
+            else{
+                cout << "There is no path from " << x << "to " << y; 
             }
             cout << endl;
         }
