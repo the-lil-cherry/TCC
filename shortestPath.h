@@ -86,7 +86,9 @@ class shortestPaths{
 
                 for(long long i = 0; i< n; i++){
                     for(long long j = 0; j<n; j++){
-                        H.push( P[i][j].min());
+                        if(P[i][j].min() != nullptr){
+                            H.push( P[i][j].min());
+                        }
                     }
                 }
 
