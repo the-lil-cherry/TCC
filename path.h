@@ -31,3 +31,11 @@ class Path{
         }
 
 };
+
+struct ComparePath {
+    bool operator()(Path* a, Path* b) const {
+        if (a->weight != b->weight)
+            return a->weight > b->weight;
+        return a->ID > b->ID;
+    }
+};

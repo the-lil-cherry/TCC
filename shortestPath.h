@@ -79,14 +79,58 @@ class shortestPaths{
                         path_u->L.insert(new_path);
                     }
                 }
-            // ======== end Phase 1 ========
 
             // ======== Phase 2 ========
 
-            // ======== end Phase 2 ========
+                priority_queue < Path *, vector <Path *>, ComparePath > H;
+
+                for(long long i = 0; i< n; i++){
+                    for(long long j = 0; j<n; j++){
+                        H.push( P[i][j].min());
+                    }
+                }
 
             // ======== Phase 3 ========
-            // ======== end Phase 3 ========
+                Path * pi_xy;
+                Path * r_xy;
+                Path * l_xy;
+                long long x, y, new_w, X, Y; // X = x' e Y = y'
+                while(!H.empty()){
+                    pi_xy = H.top();
+                    H.pop();
+                    x = pi_xy->start;
+                    y = pi_xy->end;
+                    r_xy = pi_xy->r;  // caminho πxb -> πxy =  πxb + <b, y>
+                    l_xy = pi_xy->l;  // caminho πay -> πxy =  <x, a> + πay
+
+                    if(Pstar[x][y] != pi_xy){
+                        Pstar[x][y] = pi_xy;
+                        Lstar[x][r_xy->end].insert(pi_xy);
+                        Rstar[l_xy->start][y].insert(pi_xy);
+
+                        for( auto pi_Xb : Lstar[l_xy->start][y]){
+                            X = pi_Xb->start;
+
+                            new_w = weight[X][x] + w[x][y];
+                            Path * pi_Xy = new Path(X, y, new_w, pi_Xb, pi_xy, n);
+
+                            P[X][y].insert(pi_Xy);
+                            pi_xy->L.insert(pi_Xy);
+                            pi_Xb->R.insert(pi_Xy);
+                        }
+                        
+                        for(auto pi_aY : Rstar[x][r_xy->end]){
+                            Y = pi_aY->end;
+
+                            new_w = w[x][y] + weight[y][Y];
+                            Path * pi_xY = new Path(x, Y, new_w, pi_xy, pi_aY, n);
+
+                            P[x][Y].insert(pi_xY);
+                            pi_xy->R.insert(pi_xY);
+                            pi_aY->L.insert(pi_xY);
+                        }
+                    }
+                }
             }
         }
     
